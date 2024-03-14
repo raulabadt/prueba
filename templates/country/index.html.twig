@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Country index{% endblock %}
+
+{% block body %}
+    <h1>Country index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Currencies</th>
+                <th>Capital</th>
+                <th>Region</th>
+                <th>Subregion</th>
+                <th>Languages</th>
+                <th>Latencia</th>
+                <th>Area</th>
+                <th>Population</th>
+                <th>Timezone</th>
+                <th>Continente</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for country in countries %}
+            <tr>
+                <td>{{ country.id }}</td>
+                <td>{{ country.name }}</td>
+                <td>{{ country.currencies ? country.currencies|json_encode : '' }}</td>
+                <td>{{ country.capital }}</td>
+                <td>{{ country.region }}</td>
+                <td>{{ country.subregion }}</td>
+                <td>{{ country.languages ? country.languages|join(', ') : '' }}</td>
+                <td>{{ country.latencia ? country.latencia|join(', ') : '' }}</td>
+                <td>{{ country.area }}</td>
+                <td>{{ country.population }}</td>
+                <td>{{ country.timezone ? country.timezone|date('H:i:s') : '' }}</td>
+                <td>{{ country.continente }}</td>
+                <td>
+                    <a href="{{ path('app_country_show', {'id': country.id}) }}">show</a>
+                    <a href="{{ path('app_country_edit', {'id': country.id}) }}">edit</a>
+                    <a href="">Sincronizar con api</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="13">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_country_new') }}">Create new</a>
+{% endblock %}
