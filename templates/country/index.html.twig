@@ -41,7 +41,7 @@
                 <td>
                     <a href="{{ path('app_country_show', {'id': country.id}) }}">show</a>
                     <a href="{{ path('app_country_edit', {'id': country.id}) }}">edit</a>
-                    <a href="">Sincronizar con api</a>
+                    <a href="{{ path('app_country_sync', {'id': country.id}) }}">Sincronizar con api</a>
                 </td>
             </tr>
         {% else %}

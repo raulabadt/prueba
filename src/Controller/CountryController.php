@@ -10,6 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpClient\HttpClient;
+
+
 
 #[Route('/')]
 class CountryController extends AbstractController
@@ -88,28 +91,34 @@ class CountryController extends AbstractController
     #[Route('/sync/{id}', name: 'app_country_sync')]
     public function sync(int $id, EntityManagerInterface $entityManager): Response
     {
+
+        
         // Obtener el país por su ID
         $country = $entityManager->getRepository(Country::class)->find($id);
-
+        
         if (!$country) {
             throw $this->createNotFoundException('No se encontró el país con el ID: '.$id);
         }
 
         // Realizar una solicitud a la API pública
         $httpClient = HttpClient::create();
-        $response = $httpClient->request('GET', 'URL_DE_TU_API');
-
+        $response = $httpClient->request('GET', 'https://restcountries.com/v3.1/all');
+       
         // Decodificar la respuesta JSON
         $data = $response->toArray();
+        foreach ($data as $countryData) {
+            // Comparar los datos devueltos con los datos del país
+            // Si hay diferencias, actualizar los datos del país
+            // Puedes hacer esto comparando cada campo individualmente y actualizando el país si es necesario
 
-        // Comparar los datos devueltos con los datos del país
-        // Si hay diferencias, actualizar los datos del país
-        // Puedes hacer esto comparando cada campo individualmente y actualizando el país si es necesario
-
-        // Por ejemplo, para actualizar el nombre del país si es diferente en la API
-        if ($data['name'] !== $country->getName()) {
-            $country->setName($data['name']);
+            // Por ejemplo, para actualizar el nombre del país si es diferente en la API
+            if ($countryData["name"]["common"] !== $country->getName()) {
+                $country->setName($countryData["name"]["common"] );
+            }
         }
+
+
+       
 
         // Repite este proceso para los demás campos que deseas sincronizar
 
