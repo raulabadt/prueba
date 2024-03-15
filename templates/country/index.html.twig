@@ -1,56 +1,64 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Country index{% endblock %}
+{% block title %}Country {% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/css/styles.css">
+{% endblock %}
 
 {% block body %}
-    <h1>Country index</h1>
+    <div class="container">
+        <h1 class="mt-4 mb-4">Country </h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Currencies</th>
-                <th>Capital</th>
-                <th>Region</th>
-                <th>Subregion</th>
-                <th>Languages</th>
-                <th>Latencia</th>
-                <th>Area</th>
-                <th>Population</th>
-                <th>Timezone</th>
-                <th>Continente</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for country in countries %}
-            <tr>
-                <td>{{ country.id }}</td>
-                <td>{{ country.name }}</td>
-                <td>{{ country.currencies ? country.currencies|json_encode : '' }}</td>
-                <td>{{ country.capital }}</td>
-                <td>{{ country.region }}</td>
-                <td>{{ country.subregion }}</td>
-                <td>{{ country.languages ? country.languages|join(', ') : '' }}</td>
-                <td>{{ country.latencia ? country.latencia|join(', ') : '' }}</td>
-                <td>{{ country.area }}</td>
-                <td>{{ country.population }}</td>
-                <td>{{ country.timezone ? country.timezone|date('H:i:s') : '' }}</td>
-                <td>{{ country.continente }}</td>
-                <td>
-                    <a href="{{ path('app_country_show', {'id': country.id}) }}">show</a>
-                    <a href="{{ path('app_country_edit', {'id': country.id}) }}">edit</a>
-                    <a href="{{ path('app_country_sync', {'id': country.id}) }}">Sincronizar con api</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="13">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Currencies</th>
+                        <th>Capital</th>
+                        <th>Region</th>
+                        <th>Subregion</th>
+                        <th>Languages</th>
+                        <th>Latencia</th>
+                        <th>Area</th>
+                        <th>Population</th>
+                        <th>Timezone</th>
+                        <th>Continente</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for country in countries %}
+                        <tr>
+                            <td>{{ country.id }}</td>
+                            <td>{{ country.name }}</td>
+                            <td>{{ country.currencies ? country.currencies|json_encode : '' }}</td>
+                            <td>{{ country.capital }}</td>
+                            <td>{{ country.region }}</td>
+                            <td>{{ country.subregion }}</td>
+                            <td>{{ country.languages ? country.languages|join(', ') : '' }}</td>
+                            <td>{{ country.latencia ? country.latencia|join(', ') : '' }}</td>
+                            <td>{{ country.area }}</td>
+                            <td>{{ country.population }}</td>
+                            <td>{{ country.timezone ? country.timezone|date('H:i:s') : '' }}</td>
+                            <td>{{ country.continente }}</td>
+                            <td>
+                                <a class="btn" href="{{ path('app_country_show', {'id': country.id}) }}">Show</a>
+                                <a class="btn" href="{{ path('app_country_edit', {'id': country.id}) }}">Edit</a>
+                                <a class="btn" href="{{ path('app_country_sync', {'id': country.id}) }}">Sync with API</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="13">No records found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_country_new') }}">Create new</a>
+        <a href="{{ path('app_country_new') }}" class="btn">Create new</a>
+    </div>
 {% endblock %}
