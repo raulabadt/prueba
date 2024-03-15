@@ -87,12 +87,9 @@ class CountryController extends AbstractController
         return $this->redirectToRoute('app_country_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    //Sincronizamos datos con la api
     #[Route('/sync/{id}', name: 'app_country_sync')]
     public function sync(int $id, EntityManagerInterface $entityManager): Response
     {
-
-        
         // Obtener el país por su ID
         $country = $entityManager->getRepository(Country::class)->find($id);
         
@@ -103,29 +100,75 @@ class CountryController extends AbstractController
         // Realizar una solicitud a la API pública
         $httpClient = HttpClient::create();
         $response = $httpClient->request('GET', 'https://restcountries.com/v3.1/all');
-       
-        // Decodificar la respuesta JSON
-        $data = $response->toArray();
-        foreach ($data as $countryData) {
-            // Comparar los datos devueltos con los datos del país
-            // Si hay diferencias, actualizar los datos del país
-            // Puedes hacer esto comparando cada campo individualmente y actualizando el país si es necesario
+        $apiCountriesData = $response->toArray();
+        
+        // Variables para almacenar la mejor coincidencia encontrada
+        $bestMatch = null;
+        $bestMatchSimilarity = 0;
 
-            // Por ejemplo, para actualizar el nombre del país si es diferente en la API
-            if ($countryData["name"]["common"] !== $country->getName()) {
-                $country->setName($countryData["name"]["common"] );
+        // Comparar los datos devueltos con los datos del país y encontrar la mejor coincidencia
+        foreach ($apiCountriesData as $apiCountryDataItem) {
+            // Calcular la similitud entre los nombres de los países
+            similar_text($country->getName(), $apiCountryDataItem["name"]["common"], $similarity);
+            if ($similarity > $bestMatchSimilarity) {
+                $bestMatchSimilarity = $similarity;
+                $bestMatch = $apiCountryDataItem;
             }
         }
 
+        // Actualizar los campos del país con los datos de la mejor coincidencia encontrada
+        if ($bestMatch) {
+            $country->setName($bestMatch["name"]["common"]);
+            $country->setCurrencies($bestMatch["currencies"]);
+            $country->setCapital($bestMatch["capital"][0]);
+            $country->setRegion($bestMatch["region"]);
+            $country->setSubregion($bestMatch["subregion"]);
+            $country->setLanguages($bestMatch["languages"]);
+            $country->setLatencia($bestMatch["latlng"]);
+            $country->setArea($bestMatch["area"]);
+            $country->setPopulation($bestMatch["population"]);
 
-       
+            /**
+             * Manejamos el dato timezone a través del metodo convertTimezoneFormat
+             */
+            if (isset($bestMatch["timezones"]) && !empty($bestMatch["timezones"][0])) {
+                $timezone = $this->convertTimezoneFormat($bestMatch["timezones"][0]);
+                $country->setTimezone($timezone);
+            }
 
-        // Repite este proceso para los demás campos que deseas sincronizar
+            /**
+             * Manejar el campo continente ya que en la api es un array y en mi entidad country es un string (Convertimos el dato)
+             */
+            if (isset($bestMatch["continents"]) && !empty($bestMatch["continents"][0])) {
+                // Concatenar los valores del array en una sola cadena
+                $continente = implode(', ', $bestMatch["continents"]);
+                $country->setContinente($continente);
+            }
 
-        // Guardar los cambios en la base de datos
-        $entityManager->flush();
+            // Actualiza los otros campos que desees
+
+            // Guardar los cambios en la base de datos
+            $entityManager->flush();
+        }
 
         // Redirigir a la página de índice de países o a donde desees
         return $this->redirectToRoute('app_country_index');
     }
-}
+        /**
+         * Convertimos el dato de la api en un objeto datetime tal y como
+         * lo tenemos en la entidad country
+         */
+        private function convertTimezoneFormat(string $apiTimezone): \DateTimeInterface
+        {
+            // Convertir el formato de la zona horaria de la API a "UTC+02:00"
+            $timezoneOffset = intval($apiTimezone); // Convertir a entero
+            $timezoneId = timezone_name_from_abbr(null, $timezoneOffset * 3600, false); // Multiplicar por 3600
+            $timezone = new \DateTimeZone($timezoneId);
+
+            // Crear un objeto DateTime con la zona horaria
+            $dateTime = new \DateTime('now', $timezone);
+
+            return $dateTime;
+        }
+
+    }
