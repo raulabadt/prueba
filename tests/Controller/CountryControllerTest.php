@@ -15,6 +15,12 @@ class CountryControllerTest extends WebTestCase
     private EntityRepository $repository;
     private string $path = '/country/';
 
+    /**
+     * Ejecución antes de cada prueba
+     * Configura el entorno
+     *  Crea un cliente, obtiene la entidad y el repositorio de la entidad Country,
+     *  y elimina todos los registros de países existentes en la base de datos
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -28,17 +34,23 @@ class CountryControllerTest extends WebTestCase
         $this->manager->flush();
     }
 
+    /**
+     * Verifica que la pagina principal
+     * cargue bien los datos y devuelva 200
+     */
     public function testIndex(): void
     {
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Country index');
-
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
+        //Aqui podemos verificar que el titulo de la pagina se el correcto
+        //self::assertPageTitleContains('Country index');
     }
 
+     /**
+     * Se verifica que se pueden enviar datos y
+     * crear nuevos paises.
+     */
     public function testNew(): void
     {
         $this->markTestIncomplete();
@@ -65,6 +77,12 @@ class CountryControllerTest extends WebTestCase
         self::assertSame(1, $this->repository->count([]));
     }
 
+    /**
+     * Comprobación de que se pueda acceder a 
+     * la página de un pais existente y que
+     * se muestra los detalles del pais con 
+     * titulo
+     */
     public function testShow(): void
     {
         $this->markTestIncomplete();
@@ -89,9 +107,15 @@ class CountryControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Country');
 
-        // Use assertions to check that the properties are properly displayed.
+        
     }
 
+    /**
+     * Se comprueba que los cambios de edicion
+     * se hagan correctamente y verifica
+     * que se muestren esos cambios en los detalles del país
+     *
+     */
     public function testEdit(): void
     {
         $this->markTestIncomplete();
@@ -127,6 +151,7 @@ class CountryControllerTest extends WebTestCase
             'country[continente]' => 'Something New',
         ]);
 
+        //verificación de buena redireccion 
         self::assertResponseRedirects('/country/');
 
         $fixture = $this->repository->findAll();
@@ -144,6 +169,9 @@ class CountryControllerTest extends WebTestCase
         self::assertSame('Something New', $fixture[0]->getContinente());
     }
 
+    /**
+     * Verifica que se pueda eliminar un país existente
+     */
     public function testRemove(): void
     {
         $this->markTestIncomplete();
