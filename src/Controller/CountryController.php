@@ -118,6 +118,7 @@ class CountryController extends AbstractController
         return $this->redirectToRoute('app_country_index', [], Response::HTTP_SEE_OTHER);
     }
 
+
     #[Route('/sync/{id}', name: 'app_country_sync')]
     public function sync(int $id, EntityManagerInterface $entityManager): Response
     {
@@ -199,5 +200,6 @@ class CountryController extends AbstractController
 
             return $dateTime;
         }
+
 
     }
