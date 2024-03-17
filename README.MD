@@ -40,4 +40,4 @@ Este es el archivo README para el proyecto. Aquí encontrarás los pasos necesar
     php bin/phpunit
     ```
 
-¡Listo! Ahora el proyecto debería estar instalado y configurado correctamente en tu entorno local. Si encuentras algún problema durante la instalación, no dudes en ponerte en contacto con nosotros para obtener ayuda. ¡Disfruta trabajando en el proyecto!
+¡Listo! Ahora el proyecto debería estar instalado y configurado correctamente en tu entorno local.
