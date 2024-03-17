@@ -53,11 +53,11 @@ class CountryControllerTest extends WebTestCase
      */
     public function testNew(): void
     {
-        $this->markTestIncomplete();
+        //Respuesta del cliente donde se comprueba si se crea la entidad
         $this->client->request('GET', sprintf('%snew', $this->path));
-
+        //Respuesta 200
         self::assertResponseStatusCodeSame(200);
-
+        //Enviamos datos al fomularios para guardarlos
         $this->client->submitForm('Save', [
             'country[name]' => 'Testing',
             'country[currencies]' => 'Testing',
@@ -85,7 +85,7 @@ class CountryControllerTest extends WebTestCase
      */
     public function testShow(): void
     {
-        $this->markTestIncomplete();
+        //Seteamos datos de la entidad country
         $fixture = new Country();
         $fixture->setName('My Title');
         $fixture->setCurrencies('My Title');
@@ -101,10 +101,11 @@ class CountryControllerTest extends WebTestCase
 
         $this->manager->persist($fixture);
         $this->manager->flush();
-
+        //Respuesta de cliente
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-
+        //Respuesta 200
         self::assertResponseStatusCodeSame(200);
+        //Respuesta de titulo
         self::assertPageTitleContains('Country');
 
         
@@ -118,7 +119,7 @@ class CountryControllerTest extends WebTestCase
      */
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
+        
         $fixture = new Country();
         $fixture->setName('Value');
         $fixture->setCurrencies('Value');
@@ -135,8 +136,10 @@ class CountryControllerTest extends WebTestCase
         $this->manager->persist($fixture);
         $this->manager->flush();
 
+        //Respuesta de cliente
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
 
+        // Envio de actualización al formulario
         $this->client->submitForm('Update', [
             'country[name]' => 'Something New',
             'country[currencies]' => 'Something New',
@@ -174,7 +177,7 @@ class CountryControllerTest extends WebTestCase
      */
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
+        //Seteamos los datos de la entidad Country
         $fixture = new Country();
         $fixture->setName('Value');
         $fixture->setCurrencies('Value');
@@ -190,11 +193,39 @@ class CountryControllerTest extends WebTestCase
 
         $this->manager->persist($fixture);
         $this->manager->flush();
-
+        //Respuesta del cliente y envio de la acción delete
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
         $this->client->submitForm('Delete');
-
+        // Verifcamos la reedirección
         self::assertResponseRedirects('/country/');
         self::assertSame(0, $this->repository->count([]));
+    }
+
+    public function testSyncMethod(): void
+    {
+        // Emular una solicitud HTTP con un cliente falso
+        $httpClientMock = $this->createMock(HttpClient::class);
+        $httpClientMock->expects($this->once())
+            ->method('request')
+            ->willReturn(new Response(json_encode([
+                // Simular la respuesta de la API
+                ['name' => ['common' => 'Country Name'], /* Otros datos simulados */]
+            ])));
+
+        // Crear una instancia de tu controlador
+        $controller = new CountryController();
+
+        // Obtener una instancia del EntityManager 
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Llamar al método sync con el cliente HTTP simulado y el EntityManager
+        $response = $controller->sync(1, $entityManager);
+
+        // Comprobar si la respuesta es una instancia de Response
+        $this->assertInstanceOf(Response::class, $response);
+
+        // Comprobar si la redirección es a la página de índice de países
+        $this->assertEquals('app_country_index', $response->getTargetUrl());
+
     }
 }
