@@ -17,40 +17,14 @@ header {
     text-align: center;
 }
 
-/* Estilos de la barra de navegación */
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
 
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav ul li a {
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-nav ul li a:hover {
-    color: #666;
-}
 
 /* Estilos del contenido principal */
 main {
     padding: 20px;
 }
 
-/* Estilos del pie de página */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-}
+
 
 
 /* public/css/styles.css */
@@ -96,7 +70,7 @@ footer {
     background-color: #ddd;
 }
 
-/* Archivo country_details.css */
+
 
 .page-title {
     margin-bottom: 20px;
