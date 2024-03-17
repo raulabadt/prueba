@@ -21,6 +21,7 @@ class CountryController extends AbstractController
     #[Route('/', name: 'app_country_index', methods: ['GET'])]
     public function index(CountryRepository $countryRepository): Response
     {
+        //Renderizamos la template
         return $this->render('country/index.html.twig', [
             'countries' => $countryRepository->findAll(),
         ]);
@@ -30,14 +31,18 @@ class CountryController extends AbstractController
     #[Route('/new', name: 'app_country_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        //Creamos la nueva entidad de Country
         $country = new Country();
+        //Desde aqui creamos y manejamos el formulario
         $form = $this->createForm(CountryType::class, $country);
         $form->handleRequest($request);
 
+        //Verifica si el formulario ha sido enviado
         if ($form->isSubmitted() && $form->isValid()) {
+            //Confirmamos las operaciones pendientes en base de datos
             $entityManager->persist($country);
             $entityManager->flush();
-
+            //reedirigimos al usuario a la ruta que deseamos
             return $this->redirectToRoute('app_country_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -51,6 +56,10 @@ class CountryController extends AbstractController
     #[Route('/{id}', name: 'app_country_show', methods: ['GET'])]
     public function show(Country $country): Response
     {
+        // Este método se utiliza para mostrar los detalles de un país específico.
+    
+        // Renderiza la plantilla 'show.html.twig' y pasa el objeto $country como contexto.
+        // En la plantilla, $country contendrá los datos del país que se mostrarán
         return $this->render('country/show.html.twig', [
             'country' => $country,
         ]);
@@ -60,15 +69,22 @@ class CountryController extends AbstractController
     #[Route('/{id}/edit', name: 'app_country_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Country $country, EntityManagerInterface $entityManager): Response
     {
+        // Este método se utiliza para editar  un país.
+
+        // Crea un formulario de edición utilizando el tipo de formulario 'CountryType' y pasa la entidad $country.
         $form = $this->createForm(CountryType::class, $country);
+        //Manejamos la solicitud actual del formulario
         $form->handleRequest($request);
-
+        //Verifica si el formulario ha sido enviado y los datos son validos
         if ($form->isSubmitted() && $form->isValid()) {
+             // Si el formulario es válido, actualiza el objeto $country en la base de datos.
             $entityManager->flush();
-
+             //reedirigimos al usuario a la ruta que deseamos
             return $this->redirectToRoute('app_country_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Si el formulario no se ha enviado o si los datos no son válidos, renderiza la plantilla de edición.
+   
         return $this->render('country/edit.html.twig', [
             'country' => $country,
             'form' => $form,
@@ -79,6 +95,10 @@ class CountryController extends AbstractController
     #[Route('/{id}', name: 'app_country_delete', methods: ['POST'])]
     public function delete(Request $request, Country $country, EntityManagerInterface $entityManager): Response
     {
+
+       
+
+        // Verifica si el token CSRF es válido para proteger la acción de eliminación contra ataques CSRF.
         if ($this->isCsrfTokenValid('delete'.$country->getId(), $request->request->get('_token'))) {
             $entityManager->remove($country);
             $entityManager->flush();
