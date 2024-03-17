@@ -5,9 +5,12 @@
 {% block body %}
     <div class="container">
         <h1>Create new Country</h1>
-
+        {% for flashError in app.flashes('error') %}
+            <div class="alert alert-danger">{{ flashError }}</div>
+        {% endfor %}
         {{ include('country/_form.html.twig') }}
-
+        
+        
         <a href="{{ path('app_country_index') }}" class="btn btn-secondary mt-3">Back to list</a>
     </div>
 {% endblock %}

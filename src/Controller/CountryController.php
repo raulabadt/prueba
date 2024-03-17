@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 
@@ -29,7 +30,7 @@ class CountryController extends AbstractController
 
     //Creamos un nuevo pais
     #[Route('/new', name: 'app_country_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response
     {
         //Creamos la nueva entidad de Country
         $country = new Country();
@@ -39,9 +40,19 @@ class CountryController extends AbstractController
 
         //Verifica si el formulario ha sido enviado
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $existingCountry = $entityManager->getRepository(Country::class)->findOneBy(['name' => $country->getName()]);
+            if ($existingCountry) {
+                // Si el país ya existe, añadir un mensaje de error a la sesión de flash
+                $session->getFlashBag()->add('error', 'Este país ya existe en la base de datos.');
+                // Redirigir de nuevo al formulario de creación de país
+                return $this->redirectToRoute('app_country_new');
+            }
             //Confirmamos las operaciones pendientes en base de datos
             $entityManager->persist($country);
             $entityManager->flush();
+             // Añadimos un mensaje de éxito a la sesión de flash
+            $session->getFlashBag()->add('success', 'Se ha añadido un nuevo país.');
             //reedirigimos al usuario a la ruta que deseamos
             return $this->redirectToRoute('app_country_index', [], Response::HTTP_SEE_OTHER);
         }

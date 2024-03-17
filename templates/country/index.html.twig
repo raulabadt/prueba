@@ -9,7 +9,9 @@
 {% block body %}
     <div class="container">
         <h1 class="mt-4 mb-4">Country </h1>
-
+        {% for flashSuccess in app.flashes('success') %}
+            <div class="alert alert-success">{{ flashSuccess }}</div>
+        {% endfor %}
         <div class="table-wrapper">
             <table class="table">
                 <thead>
@@ -55,6 +57,7 @@
                             <td colspan="13">No records found</td>
                         </tr>
                     {% endfor %}
+                   
                 </tbody>
             </table>
         </div>
