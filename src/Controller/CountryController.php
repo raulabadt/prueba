@@ -165,8 +165,6 @@ class CountryController extends AbstractController
                 $country->setContinente($continente);
             }
 
-            // Actualiza los otros campos que desees
-
             // Guardar los cambios en la base de datos
             $entityManager->flush();
         }

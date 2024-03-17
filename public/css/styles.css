@@ -104,3 +104,41 @@ main {
 .actions .btn {
     margin-right: 10px;
 }
+
+
+.country-form {
+    max-width: 400px;
+    
+}
+
+.country-form .form-group {
+    margin-bottom: 20px;
+}
+
+.country-form label {
+    display: block;
+    font-weight: bold;
+}
+
+.country-form .input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.country-form .btn {
+    display: block;
+    width: 169px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.country-form .btn:hover {
+    background-color: #0056b3;
+}
+
