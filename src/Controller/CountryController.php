@@ -34,20 +34,26 @@ class CountryController extends AbstractController
     {
         //Creamos la nueva entidad de Country
         $country = new Country();
+        
+       
         //Desde aqui creamos y manejamos el formulario
         $form = $this->createForm(CountryType::class, $country);
         $form->handleRequest($request);
-
+        
+        
         //Verifica si el formulario ha sido enviado
         if ($form->isSubmitted() && $form->isValid()) {
-
+            
             $existingCountry = $entityManager->getRepository(Country::class)->findOneBy(['name' => $country->getName()]);
+            
             if ($existingCountry) {
                 // Si el país ya existe, añadir un mensaje de error a la sesión de flash
                 $session->getFlashBag()->add('error', 'Este país ya existe en la base de datos.');
+
                 // Redirigir de nuevo al formulario de creación de país
                 return $this->redirectToRoute('app_country_new');
             }
+           
             //Confirmamos las operaciones pendientes en base de datos
             $entityManager->persist($country);
             $entityManager->flush();
@@ -56,11 +62,13 @@ class CountryController extends AbstractController
             //reedirigimos al usuario a la ruta que deseamos
             return $this->redirectToRoute('app_country_index', [], Response::HTTP_SEE_OTHER);
         }
-
+       
         return $this->render('country/new.html.twig', [
             'country' => $country,
             'form' => $form,
         ]);
+
+       
     }
 
     //Mostramos los datos de un pais en concreto a traves de su id

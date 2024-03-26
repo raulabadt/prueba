@@ -25,10 +25,9 @@
         "symfony/twig-bundle": "7.0.*",
         "symfony/ux-chartjs": "*",
         "symfony/validator": "7.0.*",
-        "symfony/webpack-encore-bundle": "*",
-        "symfony/webpack-encore-pack": "*",
         "symfony/yaml": "7.0.*",
         "twbs/bootstrap": "4.0.0"
+        
     },
     "config": {
         "allow-plugins": {

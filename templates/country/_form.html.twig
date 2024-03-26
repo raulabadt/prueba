@@ -1,48 +1,5 @@
-{% extends 'base_form.html.twig' %}
+{{ form_start(form)}}
 
-{% block body %}
-
-<form name="country" method="post" class="country-form">
-
-    <div class="form-group">
-        <label for="country_name">Name</label>
-        <input type="text" id="country_name" name="country[name]" maxlength="255" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="country_capital">Capital</label>
-        <input type="text" id="country_capital" name="country[capital]" maxlength="255" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="country_region">Region</label>
-        <input type="text" id="country_region" name="country[region]" maxlength="255" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="country_subregion">Subregion</label>
-        <input type="text" id="country_subregion" name="country[subregion]" maxlength="255" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="country_area">Area</label>
-        <input type="number" id="country_area" name="country[area]" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="country_population">Population</label>
-        <input type="text" id="country_population" name="country[population]" inputmode="decimal" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="country_continente">Continente</label>
-        <input type="text" id="country_continente" name="country[continente]" maxlength="255" class="form-control" />
-    </div>
-    
-    <input type="hidden" id="country__token" name="country[_token]" value="f3.4fNSc_dSsa0-hqYlUFzCsi-qfy2RxTnYw-GRFmQuyCc.u6woLMIg2JwG18lpZhuk-Rv6IGSjjQ_q8aunJAgdu0WUgGVKoAPl3Anj6w" />
-
-    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
-
-</form>
-
-{% endblock %}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
